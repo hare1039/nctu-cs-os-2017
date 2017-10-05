@@ -90,10 +90,10 @@ int main(int argc, char *argv[])
 			for(int j(0); j < size; j++)	
 				for(int interator(0); interator < size; interator++)
 					matrix.at(pos_of(i, j)) += matrix_at(interator, j) * matrix_at(i, interator);
-// 		for(auto i: matrix)
-// 		{
-// 			std::cout << "[no-fork] " << i << "\n";
-// 		}
+//		for(auto i: matrix)
+//		{
+//			std::cout << "[no-fork] " << i << "\n";
+//		}
 		std::cout << "Time spent: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock()).count()
 				  << " ms, check sum: " << static_cast<ulli>(std::accumulate(matrix.begin(), matrix.end(), 0)) << std::endl;
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 	 		    int shm_id = shmget( key, 4 * sizeof(ulli), S_IRUSR | 0660);
 	 		    void * shm = shmat(shm_id, NULL, 0);
 	 		    ulli * return_arr = static_cast<ulli *>(shm);
-				std::vector<ulli> matrix(size * size / 4);
+				std::vector<ulli> matrix(size * size / 2);
 	 		    for(int i(0); i < size/4; i++)
 					for(int j(0); j < size; j++)	
 						for(int interator(0); interator < size; interator++)
@@ -128,15 +128,15 @@ int main(int argc, char *argv[])
 				int shm_id = shmget( key, 4 * sizeof(ulli), S_IRUSR | 0660);
 				void * shm = shmat(shm_id, NULL, 0);
 				ulli * return_arr = static_cast<ulli *>(shm);
-				std::vector<ulli> matrix(size * size / 4);
+				std::vector<ulli> matrix(size * size / 2);
 				for(int i(size/4); i < size/2; i++)
 					for(int j(0); j < size; j++)	
 						for(int interator(0); interator < size; interator++)
 							matrix.at(pos_of(i - size/4, j)) += pos_of(interator, j) * pos_of(i, interator);
-//				for(auto i: matrix)
-//				{
-//					std::cout << "[4~7] " << i << "\n";
-//				}
+// 				for(auto i: matrix)
+// 				{
+// 					std::cout << "[4~7] " << i << "\n";
+// 				}
 				return_arr[1] = std::accumulate(matrix.begin(), matrix.end(), 0);
 		    }
 		);
@@ -145,15 +145,15 @@ int main(int argc, char *argv[])
 				int shm_id = shmget( key, 4 * sizeof(ulli), S_IRUSR | 0660);
 				void * shm = shmat(shm_id, NULL, 0);
 				ulli * return_arr = static_cast<ulli *>(shm);
-				std::vector<ulli> matrix(size * size / 4);
+				std::vector<ulli> matrix(size * size / 2);
 				for(int i(size/2); i < size*3/4; i++)
 					for(int j(0); j < size; j++)	
 						for(int interator(0); interator < size; interator++)
 							matrix.at(pos_of(i - size/2, j)) += pos_of(interator, j) * pos_of(i, interator);
-//				for(auto i: matrix)
-//				{
-//					std::cout << "[8~11] " << i << "\n";
-//				}
+// 				for(auto i: matrix)
+// 				{
+// 					std::cout << "[8~11] " << i << "\n";
+// 				}
 				return_arr[2] = std::accumulate(matrix.begin(), matrix.end(), 0);
 		    }
 		);
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 				int shm_id = shmget( key, 4 * sizeof(ulli), S_IRUSR | 0660);
 				void * shm = shmat(shm_id, NULL, 0);
 				ulli * return_arr = static_cast<ulli *>(shm);
-				std::vector<ulli> matrix(size * size / 4);
+				std::vector<ulli> matrix(size * size / 2);
 				for(int i(size*3/4); i < size; i++)
 					for(int j(0); j < size; j++)	
 						for(int interator(0); interator < size; interator++)
@@ -179,11 +179,9 @@ int main(int argc, char *argv[])
 
 
 		ulli * result = static_cast<ulli *>(shm), sum(0);
-		for(int i(0); i<4; i++)
-		{
+		for(int i(0); i<4; i++)		
 			sum += result[i];
-			std::cout << "add: " << result[i] << "\n";
-		}
+		
 			
 		shmdt(shm);
 	
