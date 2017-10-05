@@ -5,6 +5,10 @@
 #include <thread>
 #include <chrono>
 
+#if __cplusplus < 201103L
+    #error("Please compile using -std=c++11 or higher")
+#endif
+
 extern "C"
 {
 #include <unistd.h>
