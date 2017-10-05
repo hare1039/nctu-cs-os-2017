@@ -39,11 +39,9 @@ public:
         child_processes.push_back(std::move(p));
         return *this;
     }
-
     
     void exec_all_child()
     {
-        bool is_not_child = true;
         for(auto &i : child_processes)
         {
             pid_t x = fork();
@@ -54,14 +52,19 @@ public:
             else if(x == 0)
             {
                 i->exec_all_child();
-                is_not_child = false;
-                break;
+                exit(0);
             }
         }
-        if(is_not_child)
-            this->context();
+		this->context();
+		long pending = child_processes.size();
+		while(pending)
+		{
+			wait(NULL);
+			pending--;
+		}
     }
 };
+
 
 int main(int argc, char *argv[])
 {
@@ -70,7 +73,7 @@ int main(int argc, char *argv[])
     });
     
     std::unique_ptr<Process_manager> fork1(new Process_manager([](){
-				std::cout << "Fork1. I'm child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
+		std::cout << "Fork1. I'm child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
     }));
     
     std::unique_ptr<Process_manager> fork20(new Process_manager([](){
