@@ -43,7 +43,11 @@ public:
         child_processes.push_back(std::move(p));
         return *this;
     }
-    
+
+	pid_t pid()
+    {
+		return getpid();
+    }
     void exec_all_child()
     {
         for(auto &i : child_processes)
@@ -60,10 +64,16 @@ public:
             }
         }
 		this->context();
+
 		long pending = child_processes.size();
 		while(pending)
 		{
-			wait(NULL);
+			pid_t end_pid = wait(NULL);
+			child_processes.remove_if([end_pid](std::unique_ptr<Process_manager> &mgr_ptr)
+				{
+					return mgr_ptr->pid() == end_pid;
+				}
+			);
 			pending--;
 		}
     }
@@ -73,31 +83,31 @@ public:
 int main(int argc, char *argv[])
 {
     Process_manager this_main([](){
-        std::cout << "Main Process ID: " << getpid() << std::endl;
+        std::cout << "Main Process ID : " << getpid() << std::endl << std::endl;
     });
     
     std::unique_ptr<Process_manager> fork1(new Process_manager([](){
-		std::cout << "Fork1. I'm child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
+		std::cout << "Fork 1. I'm the child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
     }));
     
     std::unique_ptr<Process_manager> fork20(new Process_manager([](){
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        std::cout << "Fork2. I'm child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
+        std::cout << "Fork 2. I'm the child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
     }));
     
     std::unique_ptr<Process_manager> fork21(new Process_manager([](){
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        std::cout << "Fork2. I'm child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
+        std::cout << "Fork 2. I'm the child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
     }));
     
     std::unique_ptr<Process_manager> fork30(new Process_manager([](){
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
-        std::cout << "Fork3. I'm child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
+        std::cout << "Fork 3. I'm the child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
     }));
     
     std::unique_ptr<Process_manager> fork31(new Process_manager([](){
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
-        std::cout << "Fork3. I'm child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
+        std::cout << "Fork 3. I'm the child " << getpid() << ", my parent is " << getppid() << "." << std::endl;
     }));
     
     fork20->register_child(fork30);
