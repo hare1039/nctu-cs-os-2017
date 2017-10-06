@@ -91,6 +91,7 @@ typedef unsigned int ulli;
 
 int main(int argc, char *argv[])
 {
+	std::cout << "Dimenion: ";
 	int size;
 	std::cin >> size;
 	auto __start__ = std::chrono::steady_clock::now();
@@ -105,9 +106,9 @@ int main(int argc, char *argv[])
 			for(int j(0); j < size; j++)	
 				for(int interator(0); interator < size; interator++)
 					matrix.at(pos_of(i, j)) += matrix_at(interator, j) * matrix_at(i, interator);
-		std::cout << "Time spent: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock()).count()
-				  << " ms, check sum: " << static_cast<ulli>(std::accumulate(matrix.begin(), matrix.end(), 0)) << std::endl;
 
+			std::cout << "1-process, checksum = " << static_cast<ulli>(std::accumulate(matrix.begin(), matrix.end(), 0)) << std::endl
+			          << "elapsed " << std::chrono::duration_cast<std::chrono::milliseconds>(clock()).count() << " ms" << std::endl;
 	}
 
 	__start__ = std::chrono::steady_clock::now();
@@ -199,9 +200,10 @@ int main(int argc, char *argv[])
   		for(int i(0); i < size * size; i++)		
   			sum += result[i];
 		shmdt(shm);
-	
-		std::cout << "Time spent: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock()).count()
-				  << " ms, check sum: " << sum << std::endl;
+    
+		std::cout << "4-process, checksum = " << sum << std::endl
+				  << "elapsed " << std::chrono::duration_cast<std::chrono::milliseconds>(clock()).count() << " ms" << std::endl;
+
 	}
 
     return 0;
